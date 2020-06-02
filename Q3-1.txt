@@ -1,0 +1,85 @@
+FilterServlet.java
+
+package com.Harshu;
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.http.*;
+
+public class FilterServlet extends HttpServlet{
+    public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        PrintWriter out = res.getWriter();
+        String enroll_no = req.getParameter("enroll_no");
+        out.println("Welcome "+enroll_no);
+    }
+}
+
+
+FilterOne.java
+
+package com.Harshu;
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.*;
+import javax.servlet.Filter;
+
+public class FilterOne implements Filter{
+    
+    public void init(FilterConfig config){
+        
+    }
+
+   
+    public void doFilter(ServletRequest req,ServletResponse res, FilterChain chain) throws IOException, ServletException{
+        PrintWriter out = res.getWriter();
+        StringBuilder reverse = new StringBuilder();
+        reverse.append(req.getParameter("enroll_no"));
+        reverse = reverse.reverse();
+        req.setAttribute("rev_enroll_no", reverse);
+        chain.doFilter(req, res);
+        out.println("Your reverse Enrollment No.: "+reverse);
+    }
+    
+    public void destroy(){
+        
+    }
+}
+
+web.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <servlet>
+        <servlet-name>Filter</servlet-name>
+        <servlet-class>com.Harshu.Filter</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Filter</servlet-name>
+        <url-pattern>/Filter</url-pattern>
+    </servlet-mapping>
+    <filter>
+        <filter-name>FilterOne</filter-name>
+        <filter-class>com.Harshu.Filter1</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>FilterOne</filter-name>
+        <servlet-name>Filter</servlet-name>
+        <url-pattern>/Filter1</url-pattern>
+    </filter-mapping>
+</web-app>
+
+
+index.html
+
+<html>
+    <head>
+        <title>Filter</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <form action="Filter">
+            <p>Enrollment_No.: <input type="text" name="er_no"></p>
+            <p><input type="submit" value="submit"></p>
+        </form>
+    </body>
+</html>
